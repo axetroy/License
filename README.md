@@ -19,7 +19,7 @@ npm test
 Generate an Ed25519 key pair. Keep the private key on the issuing system; distribute only the public key to verifiers.
 
 ```sh
-npm exec -- license-xml keygen --private private.pem --public public.pem
+node ./src/cli.js keygen --private private.pem --public public.pem
 ```
 
 Create a UTF-8 JSON payload:
@@ -43,7 +43,7 @@ Create a UTF-8 JSON payload:
 Issue the XML license. Existing output files are never overwritten.
 
 ```sh
-npm exec -- license-xml issue \
+node ./src/cli.js issue \
   --payload payload.json \
   --private private.pem \
   --key-id production-2026 \
@@ -53,8 +53,9 @@ npm exec -- license-xml issue \
 ## Verify a license
 
 ```sh
-npm exec -- license-xml verify \
+node ./src/cli.js verify \
   --file my-product.license.xml \
+  --key-id production-2026 \
   --public-key public.pem \
   --product-id my-product \
   --product-version 5
@@ -76,7 +77,7 @@ const result = verifyLicense(xml, {
 });
 ```
 
-`issueLicense(payload, { keyId, privateKey })` creates a signed XML string. `verifyLicense(xml, options)` returns `{ status, license? }`. Pass `now` as a `Date` or timestamp for deterministic time checks. The verifier rejects DTDs, entities, XML namespaces, unknown elements, duplicate identifiers, malformed signatures, and licenses larger than 1 MiB.
+`issueLicense(payload, { keyId, privateKey })` creates a signed XML string. `verifyLicense(xml, options)` returns `{ status, license? }`. Pass `now` as a `Date` or timestamp for deterministic time checks. The verifier rejects DTD/entity declarations, XML namespaces, unknown elements, duplicate identifiers, malformed signatures, and licenses larger than 1 MiB.
 
 ## Scope and security notes
 

@@ -27,7 +27,7 @@ export function generateKeyPair() {
 }
 
 export function issueLicense(payload, { keyId, privateKey }) {
-  assert(typeof keyId === 'string' && IDENTIFIER.test(keyId), 'keyId must use letters, digits, dot, underscore, or hyphen');
+  assert(typeof keyId === 'string' && keyId.length <= 128 && IDENTIFIER.test(keyId), 'keyId must be 1–128 letters, digits, dots, underscores, or hyphens');
   assert(typeof privateKey === 'string' || Buffer.isBuffer(privateKey), 'privateKey must be a PEM string or buffer');
 
   const payloadXml = serializePayload(payload);
@@ -35,7 +35,7 @@ export function issueLicense(payload, { keyId, privateKey }) {
   const canonicalPayload = canonicalizer.process(payloadNode);
   const signature = sign(null, Buffer.from(canonicalPayload, 'utf8'), createPrivateKey(privateKey)).toString('base64');
 
-  return [
+  const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<license version="1">',
     payloadXml,
@@ -43,6 +43,8 @@ export function issueLicense(payload, { keyId, privateKey }) {
     '</license>',
     '',
   ].join('\n');
+  assert(Buffer.byteLength(xml, 'utf8') <= MAX_XML_BYTES, 'license XML exceeds the 1 MiB limit');
+  return xml;
 }
 
 export function parseLicense(xml) {
@@ -63,9 +65,9 @@ export function parseLicense(xml) {
   assertNoElementChildren(signatureNode, 'signature');
   const algorithm = signatureNode.getAttribute('algorithm');
   const keyId = signatureNode.getAttribute('keyId');
-  assert(IDENTIFIER.test(keyId), 'invalid signature keyId');
+  assert(keyId.length <= 128 && IDENTIFIER.test(keyId), 'invalid signature keyId');
   const signatureText = textContent(signatureNode);
-  assert(BASE64.test(signatureText), 'signature is not canonical Base64');
+  assert(signatureText.length === 88 && BASE64.test(signatureText), 'signature is not canonical Base64');
   const signature = Buffer.from(signatureText, 'base64');
   assert(signature.length === 64 && signature.toString('base64') === signatureText, 'invalid Ed25519 signature length or encoding');
 
@@ -134,13 +136,21 @@ function parseDocument(xml) {
   assert(typeof xml === 'string', 'license XML must be a string');
   assert(Buffer.byteLength(xml, 'utf8') <= MAX_XML_BYTES, 'license XML exceeds the 1 MiB limit');
   assert(!/<!DOCTYPE\b|<!ENTITY\b/i.test(xml), 'DTD and entity declarations are forbidden');
+  const source = xml.charCodeAt(0) === 0xfeff ? xml.slice(1) : xml;
+  const declaration = /^<\?xml\b([^?]*)\?>/.exec(source);
+  if (declaration) {
+    const version = /\bversion\s*=\s*(['"])([^'"]+)\1/.exec(declaration[1]);
+    const encoding = /\bencoding\s*=\s*(['"])([^'"]+)\1/i.exec(declaration[1]);
+    assert(version?.[2] === '1.0', 'XML declaration must specify version 1.0');
+    assert(!encoding || encoding[2].toUpperCase() === 'UTF-8', 'XML declaration encoding must be UTF-8');
+  }
 
   const errors = [];
   const document = new DOMParser({
     onError(level, message) {
       errors.push(`${level}: ${message}`);
     },
-  }).parseFromString(xml, 'application/xml');
+  }).parseFromString(source, 'application/xml');
   assert(errors.length === 0, errors.join('; ') || 'malformed XML');
   assert(!document.doctype, 'DOCTYPE is forbidden');
   assert(document.documentElement, 'missing document element');
@@ -319,13 +329,12 @@ function readContainer(node, name, expectedNames, { optional = [] } = {}) {
   const children = childElements(node);
   const actualNames = children.map((child) => child.nodeName);
   for (const expected of expectedNames) {
-    assert(actualNames.filter((actual) => actual === expected).length === (optional.includes(expected) ? 0 : 1) ||
-      (optional.includes(expected) && actualNames.filter((actual) => actual === expected).length <= 1), `invalid ${name}/${expected} element count`);
+    const count = actualNames.filter((actual) => actual === expected).length;
+    assert(optional.includes(expected) ? count <= 1 : count === 1, `invalid ${name}/${expected} element count`);
   }
   const allowed = new Set(expectedNames);
   assert(children.every((child) => allowed.has(child.nodeName)), `unexpected element in ${name}`);
-  const required = expectedNames.filter((expected) => !optional.includes(expected));
-  assertNames(children, [...required, ...actualNames.filter((actual) => optional.includes(actual))], name);
+  assertNames(children, expectedNames.filter((expected) => actualNames.includes(expected)), name);
   return Object.fromEntries(children.map((child) => [child.nodeName, child]));
 }
 

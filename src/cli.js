@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { generateKeyPair, issueLicense, parseLicense, verifyLicense } from './index.js';
+import { generateKeyPair, issueLicense, verifyLicense } from './index.js';
 import { readFileSync, writeFileSync, unlinkSync } from 'node:fs';
 
 function usage() {
   return `Usage:
   license-xml keygen --private private.pem --public public.pem
   license-xml issue --payload payload.json --private private.pem --key-id ID --out license.license.xml
-  license-xml verify --file license.license.xml --public-key public.pem [--product-id ID] [--product-version N] [--machine-fingerprint SHA256]`;
+  license-xml verify --file license.license.xml --key-id ID --public-key public.pem [--product-id ID] [--product-version N] [--machine-fingerprint SHA256]`;
 }
 
 function parseOptions(args) {
@@ -35,7 +35,18 @@ function writeNewFile(path, content, mode = 0o644) {
 
 function run() {
   const [command, ...args] = process.argv.slice(2);
+  if (!command || command === '--help' || command === '-h') {
+    process.stdout.write(`${usage()}\n`);
+    return;
+  }
   const options = parseOptions(args);
+  const allowed = {
+    keygen: ['private', 'public'],
+    issue: ['payload', 'private', 'key-id', 'out'],
+    verify: ['file', 'key-id', 'public-key', 'product-id', 'product-version', 'machine-fingerprint'],
+  }[command];
+  if (!allowed) throw new Error(`Unknown command: ${command}`);
+  if (Object.keys(options).some((name) => !allowed.includes(name))) throw new Error('Unknown option for command');
 
   if (command === 'keygen') {
     required(options, ['private', 'public']);
@@ -62,11 +73,10 @@ function run() {
   }
 
   if (command === 'verify') {
-    required(options, ['file', 'public-key']);
+    required(options, ['file', 'key-id', 'public-key']);
     const xml = readFileSync(options.file, 'utf8');
-    const parsed = parseLicense(xml);
     const result = verifyLicense(xml, {
-      publicKeys: new Map([[parsed.keyId, readFileSync(options['public-key'])]]),
+      publicKeys: new Map([[options['key-id'], readFileSync(options['public-key'])]]),
       productId: options['product-id'],
       productVersion: options['product-version'],
       machineFingerprint: options['machine-fingerprint'],
@@ -77,7 +87,6 @@ function run() {
   }
 
   process.stdout.write(`${usage()}\n`);
-  process.exitCode = command ? 2 : 0;
 }
 
 try {

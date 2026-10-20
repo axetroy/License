@@ -1,5 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generateKeyPair, issueLicense, parseLicense, verifyLicense, LicenseStatus } from '../src/index.js';
 
 const { privateKey, publicKey } = generateKeyPair();
@@ -31,6 +36,7 @@ test('rejects modified payloads and unknown keys', () => {
   const xml = issue();
   assert.equal(verifyLicense(xml.replace('<name>Acme Corporation</name>', '<name>Other Corporation</name>'), { publicKeys, now }).status, LicenseStatus.INVALID_SIGNATURE);
   assert.equal(verifyLicense(xml, { publicKeys: new Map(), now }).status, LicenseStatus.INVALID_SIGNATURE);
+  assert.equal(verifyLicense(xml.replace('algorithm="Ed25519"', 'algorithm="RSA"'), { publicKeys, now }).status, LicenseStatus.INVALID_SIGNATURE);
 });
 
 test('canonicalizes XML lexical variations while preserving signed whitespace', () => {
@@ -60,6 +66,8 @@ test('applies product, validity, and machine checks only after signature verific
 test('rejects invalid structure, DTD, and duplicate feature identifiers', () => {
   const xml = issue();
   assert.equal(verifyLicense('<!DOCTYPE license [<!ENTITY x "x">]>' + xml, { publicKeys, now }).status, LicenseStatus.INVALID_FORMAT);
+  assert.equal(verifyLicense(xml.replace('encoding="UTF-8"', 'encoding="UTF-16"'), { publicKeys, now }).status, LicenseStatus.INVALID_FORMAT);
+  assert.equal(verifyLicense(xml.replace('<license version="1">', '<license xmlns="urn:test" version="1">'), { publicKeys, now }).status, LicenseStatus.INVALID_FORMAT);
   assert.equal(verifyLicense(xml.replace('</features>', '<feature id="export" enabled="false"/></features>'), { publicKeys, now }).status, LicenseStatus.INVALID_FORMAT);
   assert.throws(() => issue({ ...payload, unknown: true }));
 });
@@ -78,4 +86,41 @@ test('parses the payload without exposing private key material', () => {
   assert.equal(parsed.keyId, 'test-key');
   assert.equal(parsed.payload.licenseId, 'LIC-001');
   assert.equal(JSON.stringify(parsed).includes(privateKey), false);
+});
+
+test('supports CLI key generation, issuance, and verification', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'license-xml-'));
+  const cli = fileURLToPath(new URL('../src/cli.js', import.meta.url));
+  const paths = {
+    privateKey: join(directory, 'private.pem'),
+    publicKey: join(directory, 'public.pem'),
+    payload: join(directory, 'payload.json'),
+    license: join(directory, 'test.license.xml'),
+  };
+  const run = (...args) => spawnSync(process.execPath, [cli, ...args], { encoding: 'utf8' });
+
+  try {
+    writeFileSync(paths.payload, JSON.stringify(payload));
+    assert.equal(run('keygen', '--private', paths.privateKey, '--public', paths.publicKey).status, 0);
+    assert.equal(run(
+      'issue',
+      '--payload', paths.payload,
+      '--private', paths.privateKey,
+      '--key-id', 'test-key',
+      '--out', paths.license,
+    ).status, 0);
+    const result = run(
+      'verify',
+      '--file', paths.license,
+      '--key-id', 'test-key',
+      '--public-key', paths.publicKey,
+      '--product-id', 'example',
+      '--product-version', '5',
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /VALID/);
+    assert.equal(readFileSync(paths.privateKey, { encoding: 'utf8' }).includes('PRIVATE KEY'), true);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });
