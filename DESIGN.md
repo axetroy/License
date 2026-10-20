@@ -7,7 +7,7 @@
 **文件格式：** XML 1.0
 **字符编码：** UTF-8
 **签名算法：** Ed25519
-**XML 规范化：** XML Canonicalization 1.1
+**XML 规范化：** Canonical XML 1.0（不含注释）
 **摘要算法：** SHA-256
 **签名编码：** Base64
 **设计目标：** 明文可读、可人工编辑、不可伪造、可离线验证
@@ -30,6 +30,7 @@ License XML v1.0 定义一种软件授权许可文件格式。
 8. 许可证支持有效期、功能权限、数量限制、客户信息和机器绑定。
 9. 许可证支持签名密钥轮换。
 10. 许可证文件本身不承担保密功能。
+11. 本协议只定义离线许可证格式及签名；撤销服务、硬件指纹采集和使用量计量属于应用层。
 
 ---
 
@@ -234,7 +235,9 @@ limits
 machine
 ```
 
-任何一个字段发生变化，签名验证必须失败。
+任何一个字段的规范化内容发生变化，签名验证必须失败。XML 注释不属于签名内容；属性顺序、引号形式和字符引用等仅改变 XML 词法形式的改动可能不会影响签名。
+
+v1 文档不得使用 XML 命名空间、DTD、外部实体或内部实体声明。不得出现未定义元素、重复的单例元素、重复属性或不符合下文结构的额外内容。解析器必须拒绝 DTD 和实体声明，不得尝试加载外部资源。
 
 ---
 
@@ -281,6 +284,8 @@ version
 ```
 
 表示许可证适用的产品大版本。
+
+`id` 必须为 1～128 个 UTF-8 字节。`version` 必须为不带前导零的非负十进制整数。
 
 例如：
 
@@ -402,7 +407,7 @@ Customer 信息属于签名保护范围。
 </validity>
 ```
 
-所有时间必须使用：
+`issuedAt` 必须存在。`expiresAt` 对 `trial` 和 `subscription` 必须存在，对 `perpetual` 必须省略。所有时间必须使用：
 
 ```text
 ISO 8601 UTC
@@ -419,6 +424,8 @@ YYYY-MM-DDTHH:mm:ssZ
 ```text
 2026-09-24T08:00:00Z
 ```
+
+时间必须是有效日历时间；不接受小数秒、时区偏移或闰秒。`expiresAt` 是排他边界，且必须晚于 `issuedAt`。验证器不得自行添加未在此定义的时钟容差。
 
 ---
 
@@ -442,6 +449,8 @@ Feature ID：
 ```text
 [a-zA-Z0-9._-]
 ```
+
+每个 `feature` 必须且只能有 `id`、`enabled` 两个属性；同一 `<features>` 中的 ID 不得重复。`enabled` 仅接受字符串 `true` 或 `false`。
 
 功能是否授权由：
 
@@ -487,10 +496,12 @@ enabled="false"
 
 `id` 表示限制类型。
 
+`id` 必须匹配 `[a-zA-Z0-9._-]+`，且在同一 `<limits>` 中唯一。
+
 元素内容必须是：
 
 ```text
-非负十进制整数
+不带前导零的非负十进制整数（`0` 或 `[1-9][0-9]*`）
 ```
 
 例如：
@@ -553,7 +564,7 @@ fingerprint
 
 必须存在。
 
-`value` 保存机器指纹的 SHA-256 十六进制结果：
+`value` 是由应用层计算并提供给验证器的机器指纹摘要；协议不规定收集哪些硬件/系统标识或其归一化方式，也不得隐式采集硬件信息。客户端应以调用方提供的当前指纹与其比较。摘要使用 SHA-256 十六进制形式：
 
 ```text
 64 hexadecimal characters
@@ -627,7 +638,7 @@ Base64
 签名输入定义为：
 
 ```text
-CanonicalXML(payload)
+CanonicalXML1.0(payload)
 ```
 
 即：
@@ -635,7 +646,7 @@ CanonicalXML(payload)
 ```text
 payload
    ↓
-XML Canonicalization 1.1
+Canonical XML 1.0（不含注释）
    ↓
 UTF-8 bytes
    ↓
@@ -802,7 +813,7 @@ XML 允许：
 
 Payload 内部不得出现无意义的文本空白。
 
-也就是说，元素：
+Canonical XML 不会删除元素之间的空白文本。元素缩进若被解析为 Payload 内文本节点，就属于签名内容；重新缩进可能导致签名验证失败。注释不参与签名。也就是说，元素：
 
 ```xml
 <users>50</users>
@@ -825,7 +836,7 @@ Payload 内部不得出现无意义的文本空白。
 但是：
 
 ```text
-任何 Payload 字段修改
+任何改变 Payload 规范化内容的字段修改
 ```
 
 都会导致：
@@ -892,7 +903,7 @@ INVALID_SIGNATURE
 
 # 24. 许可证状态
 
-客户端最终只产生以下状态：
+离线验证器最终只产生以下状态：
 
 ```text
 VALID
@@ -902,8 +913,9 @@ PRODUCT_MISMATCH
 NOT_YET_VALID
 EXPIRED
 MACHINE_MISMATCH
-REVOKED
 ```
+
+`REVOKED` 只能由在线撤销服务返回，不是签名或离线验证状态。本协议未定义撤销 API；无法联网或未集成撤销服务时，验证器不得声称已检查撤销状态。
 
 状态判断顺序固定：
 
@@ -914,9 +926,10 @@ REVOKED
 4. Product Validation
 5. Time Validation
 6. Machine Validation
-7. Revocation Validation
-8. Feature / Limit Validation
+7. 将已签名的 Feature / Limit 数据交由应用层授权逻辑消费
 ```
+
+XML 解析或结构验证失败时返回 `INVALID_FORMAT`。签名无效、算法不支持或 `keyId` 未知时返回 `INVALID_SIGNATURE`。产品匹配参数可由调用方省略；若提供，则必须全部匹配。过期时间按排他边界判断，即当前时间等于 `expiresAt` 时已过期。
 
 ---
 
@@ -976,9 +989,7 @@ REVOKED
 
             <type>fingerprint</type>
 
-            <value>
-                8A71F4D2E39F...
-            </value>
+            <value>8A71F4D2E39F0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123</value>
 
         </machine>
 
@@ -991,6 +1002,8 @@ REVOKED
 </license>
 ```
 
+**说明：** 示例签名仅用于展示结构，不是可验证的许可证；示例机器指纹也不是特定机器的真实指纹。
+
 ---
 
 # 26. 签发端
@@ -1000,9 +1013,9 @@ REVOKED
 ```text
 创建 Payload
        ↓
-XML Schema Validation
+结构验证
        ↓
-Canonical XML 1.1
+Canonical XML 1.0（不含注释）
        ↓
 Ed25519 Private Key
        ↓
@@ -1191,7 +1204,7 @@ License XML v1.0 最终固定为：
 Payload        payload
 签名算法       Ed25519
 签名范围       payload
-规范化         XML Canonicalization 1.1
+规范化         Canonical XML 1.0（不含注释）
 签名编码       Base64
 密钥标识       keyId
 时间格式       ISO 8601 UTC
@@ -1203,7 +1216,7 @@ Payload        payload
 ```text
 Signature = Ed25519.Sign(
     PrivateKey,
-    CanonicalXML(Payload)
+    CanonicalXML1.0(Payload)
 )
 ```
 
@@ -1212,11 +1225,11 @@ Signature = Ed25519.Sign(
 ```text
 Ed25519.Verify(
     PublicKey,
-    CanonicalXML(Payload),
+    CanonicalXML1.0(Payload),
     Signature
 )
 ```
 
-**Payload 任何变化都会导致验证失败。**
+**任何改变 Payload 规范化内容的变化都会导致验证失败。**
 
 这份定义可以直接作为 `License XML v1.0` 的协议基础，后续实现时只需要按照这份规范实现签发器和验证器，不需要再对许可证字段和签名机制做二次设计。
