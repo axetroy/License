@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Node.js ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20, 22, 24]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - name: Install runtime dependencies
+        if: matrix.node-version == 18
+        run: npm ci --omit=dev
+      - name: Install all dependencies
+        if: matrix.node-version != 18
+        run: npm ci
+      - name: Run checks
+        if: matrix.node-version != 18
+        run: npm run check
+      - name: Run runtime tests
+        if: matrix.node-version == 18
+        run: npm run test:runtime
