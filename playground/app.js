@@ -1,3 +1,4 @@
+import { DOMParser } from '@xmldom/xmldom';
 import { XmlCanonicalizer } from 'xmldsigjs';
 
 const examplePayload = {
@@ -295,8 +296,13 @@ function serializePayload(payload) {
 }
 
 function parseXml(xml) {
-  const document = new DOMParser().parseFromString(xml, 'application/xml');
-  if (document.querySelector('parsererror') || !document.documentElement) throw new Error('XML 格式错误。');
+  const errors = [];
+  const document = new DOMParser({
+    onError(level, message) {
+      errors.push(`${level}: ${message}`);
+    },
+  }).parseFromString(xml, 'application/xml');
+  if (errors.length || !document.documentElement) throw new Error('XML 格式错误。');
   return document;
 }
 
