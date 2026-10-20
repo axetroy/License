@@ -96,7 +96,7 @@ const result = verifyLicense(xml, {
 - GitHub Actions 会在推送和 Pull Request 时，在 Node.js 18、20、22、24 上执行测试；在 Node.js 20、22、24 上执行 lint、测试和 Playground 构建。
 - Dependabot 每周检查 npm 依赖和 GitHub Actions；CodeQL 扫描 JavaScript 和工作流文件。
 
-CLI 和核心库直接运行原生 ESM JavaScript；浏览器 Playground 使用 esbuild 打包为静态文件。
+CLI 和核心库直接运行原生 ESM JavaScript；文档站使用 VitePress 构建，Playground 使用 esbuild 打包并嵌入文档。
 
 提交更改前，请执行 `npm ci` 和 `npm run check`。Node.js 18 支持运行时库，并由仅安装运行时依赖的 CI 验证；开发工具需要 Node.js 20.19 或更高版本。贡献指南见 [CONTRIBUTING.md](./CONTRIBUTING.md)，漏洞请依照 [SECURITY.md](./SECURITY.md) 私下报告。
 
@@ -106,11 +106,13 @@ CLI 和核心库直接运行原生 ESM JavaScript；浏览器 Playground 使用 
 
 发布步骤：先更新 `package.json` 和 `package-lock.json` 中的版本并提交，再推送匹配的 `vX.Y.Z` 标签，并为该标签创建、发布 GitHub Release。工作流会核对 Release 标签与包版本，然后执行 `npm ci`、`npm run check`，最后发布带 provenance 证明的 npm 包。
 
-## 浏览器 Playground
+## 文档站
 
-浏览器 Playground 地址为 `https://axetroy.github.io/License/`。你可以编辑授权载荷，使用浏览器内存中的临时 Ed25519 密钥签名，并验证或篡改生成的 XML。许可证和密钥操作均在本地浏览器完成，不会上传到服务器。演示私钥不会持久化，严禁用于生产许可证签发。
+中英文双语 VitePress 文档站地址为 `https://axetroy.github.io/License/`。首次访问站点根路径时，会根据浏览器语言自动选择中文或英文。文档包含格式标准、签发与验证流程、安全边界、使用指南以及嵌入式 Playground。
 
-Pages 工作流会在推送到 `main` 或 `master` 分支时构建并部署静态页面。首次部署前，请在仓库 **Settings → Pages → Build and deployment → GitHub Actions** 中启用 GitHub Actions 部署。运行 `npm run build:playground` 可在本地构建到 `dist/` 目录。
+Playground 支持编辑载荷，使用浏览器内存中的临时 Ed25519 密钥签名，并验证或篡改生成的 XML。许可证和密钥操作均在本地浏览器完成，不会上传到服务器。演示私钥不会持久化，严禁用于生产签发。
+
+Pages 工作流会在推送到 `main` 或 `master` 分支时构建并部署文档站。首次部署前，请在仓库 **Settings → Pages → Build and deployment → GitHub Actions** 中启用 GitHub Actions 部署。运行 `npm run docs:dev` 可本地预览，运行 `npm run docs:build` 可构建到 `dist/` 目录。
 
 ## 安全边界
 

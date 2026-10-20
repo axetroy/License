@@ -34,8 +34,10 @@
     "lint": "eslint .",
     "test": "node --test",
     "test:runtime": "node --test test/license.test.js",
-    "check": "npm run lint && npm test && npm run build:playground && npm pack --dry-run",
-    "build:playground": "node ./scripts/build-playground.js"
+    "check": "npm run lint && npm test && npm run docs:build && npm pack --dry-run",
+    "build:playground": "node ./scripts/build-playground.js",
+    "docs:build": "npm run build:playground && vitepress build docs",
+    "docs:dev": "npm run build:playground && vitepress dev docs"
   },
   "engines": {
     "node": ">=18"
@@ -48,6 +50,10 @@
     "@eslint/js": "10.0.1",
     "esbuild": "0.28.2",
     "eslint": "10.13.0",
+    "vitepress": "^1.6.4",
     "xmldsigjs": "2.8.8"
+  },
+  "overrides": {
+    "vite": "6.4.4"
   }
 }

@@ -1,0 +1,20 @@
+.language-fallback {
+  margin: 2rem auto;
+  max-width: 38rem;
+  text-align: center;
+}
+
+.playground-frame {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.playground-frame iframe {
+  display: block;
+  width: 100%;
+  height: min(850px, 80vh);
+  min-height: 620px;
+  border: 0;
+  background: #f5f6f8;
+}

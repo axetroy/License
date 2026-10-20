@@ -95,11 +95,13 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidance and [SECURITY
 - Machine fingerprint collection and revocation are application-layer integrations; offline verification cannot determine whether a license was revoked remotely.
 - A valid signature proves that the signed payload was issued by a holder of the corresponding private key. It does not prevent patching the client application or changing the system clock.
 
-## Browser playground
+## Documentation site
 
-The browser playground at `https://axetroy.github.io/License/` lets you edit a payload, sign it with a temporary in-memory Ed25519 key, and verify or tamper with the resulting XML. It performs all license operations locally and does not send the entered license or keys to a server. The demo private key is not persisted and must never be used to issue production licenses.
+The bilingual VitePress documentation site is published at `https://axetroy.github.io/License/`. On the first visit to the site root, it selects Chinese or English based on the browser language. The docs include separate guides to the format standard, signing and verification flow, security boundaries, package usage, and an embedded playground.
 
-The Pages workflow builds and deploys the static app on pushes to `main` or `master`. Enable **Settings → Pages → Build and deployment → GitHub Actions** once in the repository to activate deployments. Run `npm run build:playground` locally to create the static site in `dist/`.
+The playground edits a payload, signs it with a temporary in-memory Ed25519 key, and verifies or tampers with the resulting XML. License operations stay in the browser and are not sent to a server. The demo private key is not persisted and must never be used to issue production licenses.
+
+The Pages workflow builds and deploys the docs site on pushes to `main` or `master`. Enable **Settings → Pages → Build and deployment → GitHub Actions** once in the repository to activate deployments. Run `npm run docs:dev` to preview locally and `npm run docs:build` to create the static site in `dist/`.
 
 ## Automated npm publishing
 
