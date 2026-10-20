@@ -84,7 +84,7 @@ const result = verifyLicense(xml, {
 
 ## Project checks
 
-Run `npm ci` and `npm run check` before submitting changes. The check runs ESLint, unit and CLI integration tests, builds the playground, and reviews the files included in the npm package. Node.js 18 is supported for the runtime library and is covered by runtime-only CI; development tooling requires Node.js 20.19 or newer. Dependabot checks npm dependencies and GitHub Actions weekly, and CodeQL scans JavaScript and workflow files.
+Run `npm ci` and `npm run check` before submitting changes. The check runs ESLint, unit and CLI integration tests, builds the documentation site and embedded playground, and reviews the files included in the npm package. Node.js 18 is supported for the runtime library and is covered by runtime-only CI; development tooling requires Node.js 20.19 or newer. Dependabot checks npm dependencies and GitHub Actions weekly, and CodeQL scans JavaScript and workflow files.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidance and [SECURITY.md](./SECURITY.md) to report a vulnerability privately.
 

@@ -2,6 +2,7 @@ node_modules/
 dist/
 docs/.vitepress/cache/
 docs/.vitepress/temp/
+docs/public/playground/
 *.license.xml
 *.private.pem
 private.pem

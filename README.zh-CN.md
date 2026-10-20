@@ -92,7 +92,7 @@ const result = verifyLicense(xml, {
 
 - `npm run lint`：使用 ESLint 检查代码。
 - `npm test`：使用 Node.js 内置测试运行器执行单元测试和 CLI 集成测试。
-- `npm run check`：依次运行 lint、测试、构建浏览器 Playground，并检查 npm 发布包内容。
+- `npm run check`：依次运行 lint、测试、构建文档站与嵌入式 Playground，并检查 npm 发布包内容。
 - GitHub Actions 会在推送和 Pull Request 时，在 Node.js 18、20、22、24 上执行测试；在 Node.js 20、22、24 上执行 lint、测试和 Playground 构建。
 - Dependabot 每周检查 npm 依赖和 GitHub Actions；CodeQL 扫描 JavaScript 和工作流文件。
 

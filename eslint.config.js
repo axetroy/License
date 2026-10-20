@@ -2,7 +2,7 @@ import eslint from '@eslint/js';
 
 export default [
   {
-    ignores: ['node_modules/**', 'coverage/**', 'dist/**'],
+    ignores: ['node_modules/**', 'coverage/**', 'dist/**', 'docs/public/playground/**'],
   },
   eslint.configs.recommended,
   {
