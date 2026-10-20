@@ -5,13 +5,27 @@ const englishNav = [
   { text: 'How it works', link: '/en/how-it-works' },
   { text: 'Guide', link: '/en/guide' },
   { text: 'Playground', link: '/en/playground' },
+  {
+    text: 'Language',
+    items: [
+      { text: 'English', link: '/en/' },
+      { text: '简体中文', link: '/zh-CN/' },
+    ],
+  },
 ];
 
 const chineseNav = [
   { text: '格式标准', link: '/zh-CN/format' },
   { text: '工作原理', link: '/zh-CN/how-it-works' },
   { text: '使用指南', link: '/zh-CN/guide' },
-  { text: 'Playground', link: '/zh-CN/playground' },
+  { text: '在线体验', link: '/zh-CN/playground' },
+  {
+    text: '语言',
+    items: [
+      { text: 'English', link: '/en/' },
+      { text: '简体中文', link: '/zh-CN/' },
+    ],
+  },
 ];
 
 export default defineConfig({
@@ -25,13 +39,6 @@ export default defineConfig({
   themeConfig: {
     logo: { light: '/logo.svg', dark: '/logo.svg', alt: 'License XML' },
     socialLinks: [{ icon: 'github', link: 'https://github.com/axetroy/License' }],
-    localeLinks: {
-      text: 'Language',
-      items: [
-        { text: 'English', link: '/en/' },
-        { text: '简体中文', link: '/zh-CN/' },
-      ],
-    },
     nav: englishNav,
     sidebar: {
       '/en/': [
