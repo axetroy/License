@@ -92,7 +92,7 @@ export function verifyLicense(xml, options = {}) {
   const publicKey = getPublicKey(options.publicKeys, parsed.keyId);
   if (!publicKey) return { status: LicenseStatus.INVALID_SIGNATURE };
 
-  let signatureIsValid = false;
+  let signatureIsValid;
   try {
     signatureIsValid = verify(
       null,

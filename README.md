@@ -1,5 +1,7 @@
 # License XML
 
+[简体中文](./README.zh-CN.md) | [English](./README.md)
+
 Node.js implementation of the License XML v1.0 offline license format. The format and its security boundaries are specified in [DESIGN.md](./DESIGN.md).
 
 ## Requirements

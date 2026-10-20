@@ -1,0 +1,109 @@
+# License XML
+
+[简体中文](./README.zh-CN.md) | [English](./README.md)
+
+License XML v1.0 离线软件许可证的 Node.js 实现。协议格式及安全边界详见[设计白皮书](./DESIGN.md)。
+
+## 环境要求
+
+- Node.js 18 或更高版本
+- npm
+
+## 安装与检查
+
+```sh
+npm ci
+npm run lint
+npm test
+```
+
+也可以一次运行 lint 和测试：
+
+```sh
+npm run check
+```
+
+## 生成密钥并签发许可证
+
+生成 Ed25519 密钥对。私钥应仅保存在签发系统中；客户端只应分发公钥。
+
+```sh
+node ./src/cli.js keygen --private private.pem --public public.pem
+```
+
+准备 UTF-8 编码的 JSON 授权载荷：
+
+```json
+{
+  "licenseId": "LIC-20260924-00123",
+  "product": { "id": "my-product", "version": "5" },
+  "type": "subscription",
+  "customer": { "id": "CUSTOMER-001", "name": "Acme Corporation" },
+  "validity": {
+    "issuedAt": "2026-09-24T08:00:00Z",
+    "expiresAt": "2027-09-24T08:00:00Z"
+  },
+  "features": [{ "id": "export", "enabled": true }],
+  "limits": [{ "id": "users", "value": "50" }],
+  "machine": { "type": "none" }
+}
+```
+
+使用私钥签发许可证。若输出文件已存在，命令会失败，不会覆盖原文件。
+
+```sh
+node ./src/cli.js issue \
+  --payload payload.json \
+  --private private.pem \
+  --key-id production-2026 \
+  --out my-product.license.xml
+```
+
+## 验证许可证
+
+验证时提供与许可证 `keyId` 对应的公钥：
+
+```sh
+node ./src/cli.js verify \
+  --file my-product.license.xml \
+  --key-id production-2026 \
+  --public-key public.pem \
+  --product-id my-product \
+  --product-version 5
+```
+
+验证器会输出[白皮书定义的状态](./DESIGN.md)，验证失败时退出码为 `1`，命令或输入错误时退出码为 `2`。机器绑定许可证需要使用 `--machine-fingerprint` 传入应用计算的 64 位 SHA-256 十六进制摘要。
+
+## JavaScript API
+
+```js
+import { generateKeyPair, issueLicense, verifyLicense } from 'license-xml';
+
+const { privateKey, publicKey } = generateKeyPair();
+const xml = issueLicense(payload, { keyId: 'production-2026', privateKey });
+const result = verifyLicense(xml, {
+  publicKeys: new Map([['production-2026', publicKey]]),
+  productId: 'my-product',
+  productVersion: '5',
+});
+```
+
+`issueLicense(payload, { keyId, privateKey })` 返回签名后的 XML 字符串。`verifyLicense(xml, options)` 返回 `{ status, license? }`。可以通过 `now`（`Date` 或时间戳）指定验证时间，便于编写确定性测试。
+
+验证器拒绝 DTD/实体声明、XML 命名空间、未知元素、重复标识符、格式错误的签名以及超过 1 MiB 的许可证文件。
+
+## 工程化与 CI
+
+- `npm run lint`：使用 ESLint 检查代码。
+- `npm test`：使用 Node.js 内置测试运行器执行单元测试和 CLI 集成测试。
+- `npm run check`：依次运行 lint 和测试。
+- GitHub Actions 会在推送和 Pull Request 时，在 Node.js 20、22、24 上执行安装、lint 和测试。
+
+本项目直接运行原生 ESM JavaScript，不需要转译或打包步骤。
+
+## 安全边界
+
+- 签名和验证使用 Node.js 内置 Ed25519 密码学能力及不含注释的 Canonical XML 1.0。
+- 本项目不保存私钥、不提供许可证服务器或在线撤销接口、不采集硬件信息，也不负责在应用中强制执行功能权限和用量限制。
+- 机器指纹采集和许可证撤销属于应用层集成；离线验证无法获知服务器端刚刚发生的撤销。
+- 有效签名证明载荷由对应私钥持有者签发，但无法阻止攻击者 Patch 客户端程序或修改系统时间。
