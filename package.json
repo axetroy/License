@@ -11,7 +11,8 @@
   "scripts": {
     "lint": "eslint .",
     "test": "node --test",
-    "check": "npm run lint && npm test"
+    "check": "npm run lint && npm test",
+    "build:playground": "node ./scripts/build-playground.js"
   },
   "engines": {
     "node": ">=18"
@@ -22,6 +23,8 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "eslint": "10.13.0"
+    "esbuild": "0.28.2",
+    "eslint": "10.13.0",
+    "xmldsigjs": "2.8.8"
   }
 }

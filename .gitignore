@@ -1,4 +1,5 @@
 node_modules/
+dist/
 *.license.xml
 *.private.pem
 private.pem
