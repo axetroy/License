@@ -23,6 +23,7 @@ export default [
         URL: 'readonly',
         URLSearchParams: 'readonly',
         document: 'readonly',
+        location: 'readonly',
         navigator: 'readonly',
         window: 'readonly',
         DOMParser: 'readonly',

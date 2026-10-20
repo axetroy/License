@@ -8,7 +8,9 @@ import { onMounted } from 'vue';
 
 onMounted(() => {
   const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
-  const locale = languages.some((language) => /^zh(?:-|$)/i.test(language)) ? 'zh-CN' : 'en';
+  const locale = languages
+    .map((language) => (/^zh(?:-|$)/i.test(language) ? 'zh-CN' : /^en(?:-|$)/i.test(language) ? 'en' : null))
+    .find(Boolean) ?? 'en';
   window.location.replace(`${import.meta.env.BASE_URL}${locale}/`);
 });
 </script>
