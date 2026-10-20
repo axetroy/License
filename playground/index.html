@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f5f6f8">
     <meta name="description" content="在浏览器本地生成和验证 License XML 演示许可证。">
+    <link rel="icon" href="data:,">
     <title>License XML Playground</title>
     <link rel="stylesheet" href="./style.css">
     <script type="module" src="./app.js"></script>
@@ -61,7 +62,7 @@
           <textarea id="license" class="code-input license-input" spellcheck="false" placeholder="签名后的 License XML 会显示在这里；也可以粘贴已有许可证" aria-label="签名许可证 XML"></textarea>
           <div class="verify-row">
             <button id="verify" class="button button-secondary" type="button">验证许可证 <span aria-hidden="true">→</span></button>
-            <span class="verify-caption">验证签名、有效期和机器绑定</span>
+            <span class="verify-caption">验证签名与有效期；机器绑定需集成指纹</span>
           </div>
           <div id="result" class="result result-idle" role="status" aria-live="polite">
             <span class="result-indicator"></span>

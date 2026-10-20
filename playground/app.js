@@ -14,7 +14,6 @@ const examplePayload = {
   machine: { type: 'none' },
 };
 
-const canonicalizer = new XmlCanonicalizer(false, false);
 const encoder = new TextEncoder();
 const payloadField = document.querySelector('#payload');
 const publicKeyField = document.querySelector('#public-key');
@@ -38,6 +37,10 @@ document.querySelector('#reset').addEventListener('click', () => {
 
 signButton.addEventListener('click', async () => {
   signButton.disabled = true;
+  licenseField.value = '';
+  publicKeyField.value = '';
+  demoPrivateKey = undefined;
+  copyButton.disabled = true;
   try {
     ensureEd25519();
     const payload = validatePayload(JSON.parse(payloadField.value));
@@ -49,7 +52,7 @@ signButton.addEventListener('click', async () => {
 
     const payloadXml = serializePayload(payload);
     const payloadNode = parseXml(payloadXml).documentElement;
-    const canonicalPayload = canonicalizer.Canonicalize(payloadNode);
+    const canonicalPayload = canonicalize(payloadNode);
     const signature = new Uint8Array(await crypto.subtle.sign('Ed25519', demoPrivateKey, encoder.encode(canonicalPayload)));
     licenseField.value = [
       '<?xml version="1.0" encoding="UTF-8"?>',
@@ -118,6 +121,7 @@ function validatePayload(payload) {
   const licenseId = requiredText(payload.licenseId, 'licenseId');
   if (encoder.encode(licenseId).length > 128) throw new Error('licenseId 最长为 128 个 UTF-8 字节。');
   const productId = requiredText(payload.product.id, 'product.id');
+  if (encoder.encode(productId).length > 128) throw new Error('product.id 最长为 128 个 UTF-8 字节。');
   const productVersion = String(payload.product.version);
   if (!/^(0|[1-9]\d*)$/.test(productVersion)) throw new Error('product.version 必须为不带前导零的非负整数。');
 
@@ -178,23 +182,33 @@ function parseLicense(xml) {
   if (typeof xml !== 'string' || encoder.encode(xml).length > 1024 * 1024 || /<!DOCTYPE\b|<!ENTITY\b/i.test(xml)) {
     throw new Error('许可证为空、超过 1 MiB 或包含禁止的 DTD/实体声明。');
   }
+  const declaration = /^\s*<\?xml\b([^?]*)\?>/.exec(xml);
+  if (declaration) {
+    const version = /\bversion\s*=\s*(['"])([^'"]+)\1/.exec(declaration[1]);
+    const encoding = /\bencoding\s*=\s*(['"])([^'"]+)\1/i.exec(declaration[1]);
+    if (version?.[2] !== '1.0' || (encoding && encoding[2].toUpperCase() !== 'UTF-8')) {
+      throw new Error('XML 声明必须使用 XML 1.0 和 UTF-8。');
+    }
+  }
   const document = parseXml(xml);
   const root = document.documentElement;
-  if (root.nodeName !== 'license' || root.namespaceURI || root.getAttribute('version') !== '1' || root.attributes.length !== 1) {
+  assertAttributes(root, ['version']);
+  if (root.nodeName !== 'license' || root.namespaceURI || root.getAttribute('version') !== '1') {
     throw new Error('根元素必须是无命名空间的 <license version="1">。');
   }
-  const rootChildren = elementChildren(root, ['payload', 'signature']);
+  const rootChildren = elementChildren(root, ['payload', 'signature'], [], ['version']);
   if (rootChildren.length !== 2 || rootChildren[0].nodeName !== 'payload' || rootChildren[1].nodeName !== 'signature') {
     throw new Error('license 必须依次包含 payload 和 signature。');
   }
   const payloadNode = rootChildren[0];
+  assertAttributes(payloadNode, []);
   const payloadChildren = elementChildren(payloadNode, ['licenseId', 'product', 'type', 'customer', 'validity', 'features', 'limits', 'machine']);
   if (payloadChildren.length !== 8) throw new Error('payload 结构不符合 License XML v1.0。');
   const fields = Object.fromEntries(payloadChildren.map((node) => [node.nodeName, node]));
   const productFields = elementChildren(fields.product, ['id', 'version']);
-  const customerFields = elementChildren(fields.customer, ['id', 'name', 'email']);
-  const validityFields = elementChildren(fields.validity, ['issuedAt', 'expiresAt']);
-  const machineFields = elementChildren(fields.machine, ['type', 'value']);
+  const customerFields = elementChildren(fields.customer, ['id', 'name', 'email'], ['email']);
+  const validityFields = elementChildren(fields.validity, ['issuedAt', 'expiresAt'], ['expiresAt']);
+  const machineFields = elementChildren(fields.machine, ['type', 'value'], ['value']);
   const type = leafText(fields.type);
   if (productFields.length !== 2 || customerFields.length < 2 || customerFields.length > 3 || validityFields.length < 1 || validityFields.length > 2 || machineFields.length < 1 || machineFields.length > 2) {
     throw new Error('payload 子元素结构错误。');
@@ -204,16 +218,20 @@ function parseLicense(xml) {
   const validity = { issuedAt: leafText(validityFields[0]) };
   if (validityFields[1]) validity.expiresAt = leafText(validityFields[1]);
   const features = elementChildren(fields.features, null).map((node) => {
-    if (node.nodeName !== 'feature' || node.attributes.length !== 2 || node.getAttribute('enabled') !== 'true' && node.getAttribute('enabled') !== 'false') {
+    assertAttributes(node, ['id', 'enabled']);
+    if (node.nodeName !== 'feature' || (node.getAttribute('enabled') !== 'true' && node.getAttribute('enabled') !== 'false')) {
       throw new Error('features 包含格式错误的 feature。');
     }
+    if ([...node.children].length || node.textContent.trim()) throw new Error('feature 必须是空元素。');
     return { id: node.getAttribute('id'), enabled: node.getAttribute('enabled') === 'true' };
   });
   const limits = elementChildren(fields.limits, null).map((node) => {
-    if (node.nodeName !== 'limit' || node.attributes.length !== 1) throw new Error('limits 包含格式错误的 limit。');
-    return { id: node.getAttribute('id'), value: leafText(node) };
+    assertAttributes(node, ['id']);
+    if (node.nodeName !== 'limit') throw new Error('limits 包含格式错误的 limit。');
+    return { id: node.getAttribute('id'), value: leafText(node, ['id']) };
   });
   const machine = { type: leafText(machineFields[0]) };
+  if (machineFields.length === 2 && machineFields[1].nodeName !== 'value') throw new Error('machine/value 必须位于 machine/type 之后。');
   if (machineFields[1]) machine.value = leafText(machineFields[1]);
   const payload = validatePayload({
     licenseId: leafText(fields.licenseId),
@@ -226,13 +244,14 @@ function parseLicense(xml) {
     machine,
   });
   const signatureNode = rootChildren[1];
-  if (signatureNode.attributes.length !== 2 || signatureNode.getAttribute('algorithm') !== 'Ed25519' || !/^[a-zA-Z0-9._-]{1,128}$/.test(signatureNode.getAttribute('keyId'))) {
+  assertAttributes(signatureNode, ['algorithm', 'keyId']);
+  if (signatureNode.getAttribute('algorithm') !== 'Ed25519' || !/^[a-zA-Z0-9._-]{1,128}$/.test(signatureNode.getAttribute('keyId'))) {
     throw new Error('signature 算法或 keyId 格式错误。');
   }
-  const signatureText = leafText(signatureNode);
+  const signatureText = leafText(signatureNode, ['algorithm', 'keyId']);
   const signature = fromBase64(signatureText);
   if (signature.length !== 64 || toBase64(signature) !== signatureText) throw new Error('Ed25519 签名必须是 64 字节的标准 Base64。');
-  return { payload, signature, canonicalPayload: canonicalizer.Canonicalize(payloadNode) };
+  return { payload, signature, canonicalPayload: canonicalize(payloadNode) };
 }
 
 function validateValidity(payload) {
@@ -281,7 +300,12 @@ function parseXml(xml) {
   return document;
 }
 
-function elementChildren(node, expected) {
+function canonicalize(node) {
+  return new XmlCanonicalizer(false, false).Canonicalize(node);
+}
+
+function elementChildren(node, expected, optional = [], attributes = []) {
+  assertAttributes(node, attributes);
   for (const child of node.childNodes) {
     if (child.nodeType === 3 || child.nodeType === 4) {
       if (child.nodeValue.trim()) throw new Error(`${node.nodeName} 中存在意外文本。`);
@@ -290,9 +314,16 @@ function elementChildren(node, expected) {
     }
   }
   const elements = [...node.children];
-  if (expected && (elements.some((element) => element.namespaceURI || !expected.includes(element.nodeName)) ||
-    elements.some((element, index) => expected.includes(element.nodeName) && elements.findIndex((candidate) => candidate.nodeName === element.nodeName) !== index))) {
-    throw new Error(`${node.nodeName} 包含未知、重复或带命名空间的元素。`);
+  if (expected && elements.some((element) => element.namespaceURI || !expected.includes(element.nodeName))) {
+    throw new Error(`${node.nodeName} 包含未知或带命名空间的元素。`);
+  }
+  if (expected) {
+    const names = elements.map((element) => element.nodeName);
+    const orderedExpected = expected.filter((name) => names.includes(name));
+    if (names.length !== new Set(names).size || names.some((name, index) => name !== orderedExpected[index]) ||
+      expected.some((name) => !optional.includes(name) && !names.includes(name))) {
+      throw new Error(`${node.nodeName} 包含缺失、重复或顺序错误的元素。`);
+    }
   }
   for (const element of elements) {
     if ([...element.attributes].some((attribute) => attribute.namespaceURI || attribute.name.startsWith('xmlns'))) {
@@ -302,8 +333,9 @@ function elementChildren(node, expected) {
   return elements;
 }
 
-function leafText(node) {
-  if ([...node.children].length || [...node.attributes].some((attribute) => attribute.namespaceURI || attribute.name.startsWith('xmlns'))) {
+function leafText(node, attributes = []) {
+  assertAttributes(node, attributes);
+  if ([...node.children].length) {
     throw new Error(`${node.nodeName} 必须是无属性的文本元素。`);
   }
   const value = node.textContent;
@@ -311,11 +343,30 @@ function leafText(node) {
   return value;
 }
 
+function assertAttributes(node, expected) {
+  const actual = [...node.attributes].map((attribute) => attribute.name);
+  if ([...node.attributes].some((attribute) => attribute.namespaceURI || attribute.name.startsWith('xmlns')) ||
+    actual.length !== expected.length || expected.some((name) => !actual.includes(name))) {
+    throw new Error(`${node.nodeName} 属性不符合 License XML v1.0。`);
+  }
+}
+
 function requiredText(value, name) {
-  if (typeof value !== 'string' || !value || value !== value.trim() || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(value)) {
+  if (typeof value !== 'string' || !value || value !== value.trim() || !isXmlText(value)) {
     throw new Error(`${name} 必须是非空且无首尾空白的文本。`);
   }
   return value;
+}
+
+function isXmlText(value) {
+  for (const character of value) {
+    const codePoint = character.codePointAt(0);
+    if (!(codePoint === 0x9 || codePoint === 0xa || codePoint === 0xd ||
+      (codePoint >= 0x20 && codePoint <= 0xd7ff) ||
+      (codePoint >= 0xe000 && codePoint <= 0xfffd) ||
+      (codePoint >= 0x10000 && codePoint <= 0x10ffff))) return false;
+  }
+  return true;
 }
 
 function validateDate(value, name) {

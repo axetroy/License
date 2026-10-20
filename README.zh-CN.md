@@ -17,11 +17,7 @@ npm ci
 npm run check
 ```
 
-如需在本地开发并运行 lint，请使用 Node.js 20.19 或更高版本。
-
-```sh
-npm run check
-```
+如需在本地开发并运行 ESLint，请使用 Node.js 20.19 或更高版本。
 
 ## 生成密钥并签发许可证
 
@@ -96,16 +92,22 @@ const result = verifyLicense(xml, {
 
 - `npm run lint`：使用 ESLint 检查代码。
 - `npm test`：使用 Node.js 内置测试运行器执行单元测试和 CLI 集成测试。
-- `npm run check`：依次运行 lint 和测试。
-- GitHub Actions 会在推送和 Pull Request 时，在 Node.js 18、20、22、24 上执行测试；在 Node.js 20、22、24 上执行 lint 和测试。
+- `npm run check`：依次运行 lint、测试并构建浏览器 Playground。
+- GitHub Actions 会在推送和 Pull Request 时，在 Node.js 18、20、22、24 上执行测试；在 Node.js 20、22、24 上执行 lint、测试和 Playground 构建。
 
-本项目直接运行原生 ESM JavaScript，不需要转译或打包步骤。
+CLI 和核心库直接运行原生 ESM JavaScript；浏览器 Playground 使用 esbuild 打包为静态文件。
 
 ## 自动发布到 npm
 
 `.github/workflows/publish.yml` 会在 GitHub Release 发布后，通过 npm trusted publishing（OIDC）发布到 npm，无需 npm access token。首次发布前，请在 npmjs.com 对应包的 **Trusted Publisher** 设置中，将发布方配置为当前 GitHub 仓库和工作流文件 `.github/workflows/publish.yml`。无需设置 `NPM_TOKEN` Secret。
 
 发布步骤：先更新 `package.json` 和 `package-lock.json` 中的版本并提交，再推送匹配的 `vX.Y.Z` 标签，并为该标签创建、发布 GitHub Release。工作流会核对 Release 标签与包版本，然后执行 `npm ci`、`npm run check`，最后发布带 provenance 证明的 npm 包。
+
+## 浏览器 Playground
+
+浏览器 Playground 地址为 `https://axetroy.github.io/License/`。你可以编辑授权载荷，使用浏览器内存中的临时 Ed25519 密钥签名，并验证或篡改生成的 XML。许可证和密钥操作均在本地浏览器完成，不会上传到服务器。演示私钥不会持久化，严禁用于生产许可证签发。
+
+Pages 工作流会在推送到 `main` 或 `master` 分支时构建并部署静态页面。首次部署前，请在仓库 **Settings → Pages → Build and deployment → GitHub Actions** 中启用 GitHub Actions 部署。运行 `npm run build:playground` 可在本地构建到 `dist/` 目录。
 
 ## 安全边界
 

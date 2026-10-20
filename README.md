@@ -89,6 +89,12 @@ const result = verifyLicense(xml, {
 - Machine fingerprint collection and revocation are application-layer integrations; offline verification cannot determine whether a license was revoked remotely.
 - A valid signature proves that the signed payload was issued by a holder of the corresponding private key. It does not prevent patching the client application or changing the system clock.
 
+## Browser playground
+
+The browser playground at `https://axetroy.github.io/License/` lets you edit a payload, sign it with a temporary in-memory Ed25519 key, and verify or tamper with the resulting XML. It performs all license operations locally and does not send the entered license or keys to a server. The demo private key is not persisted and must never be used to issue production licenses.
+
+The Pages workflow builds and deploys the static app on pushes to `main` or `master`. Enable **Settings → Pages → Build and deployment → GitHub Actions** once in the repository to activate deployments. Run `npm run build:playground` locally to create the static site in `dist/`.
+
 ## Automated npm publishing
 
 The `Publish to npm` GitHub Actions workflow publishes a GitHub Release to npm using npm trusted publishing (OIDC), without an npm access token. Before the first release, configure the package's **Trusted Publisher** on npmjs.com to use this GitHub repository and `.github/workflows/publish.yml`. No `NPM_TOKEN` secret is needed.

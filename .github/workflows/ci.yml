@@ -34,8 +34,9 @@ jobs:
       - name: Install all dependencies
         if: matrix.node-version != 18
         run: npm ci
-      - name: Lint
+      - name: Run checks
         if: matrix.node-version != 18
-        run: npm run lint
-      - name: Test
+        run: npm run check
+      - name: Run runtime tests
+        if: matrix.node-version == 18
         run: npm test

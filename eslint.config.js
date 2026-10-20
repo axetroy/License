@@ -2,7 +2,7 @@ import eslint from '@eslint/js';
 
 export default [
   {
-    ignores: ['node_modules/**', 'coverage/**'],
+    ignores: ['node_modules/**', 'coverage/**', 'dist/**'],
   },
   eslint.configs.recommended,
   {
@@ -13,6 +13,13 @@ export default [
       globals: {
         Buffer: 'readonly',
         process: 'readonly',
+        crypto: 'readonly',
+        globalThis: 'readonly',
+        self: 'readonly',
+        XPathResult: 'readonly',
+        XMLSerializer: 'readonly',
+        TextDecoder: 'readonly',
+        global: 'readonly',
         URL: 'readonly',
         URLSearchParams: 'readonly',
         document: 'readonly',
