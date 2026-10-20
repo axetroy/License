@@ -183,7 +183,7 @@ function errorMessage(message) {
   for (const [pattern, replacement] of patterns) {
     if (pattern.test(message)) return message.replace(pattern, replacement);
   }
-  return message;
+  return /[\u3400-\u9fff]/.test(message) ? 'The license input is invalid. Check its XML structure and format.' : message;
 }
 
 function localizeInterface() {
