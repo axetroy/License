@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20, 22, 24]
+        node-version: [18, 20, 22, 24]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,9 +28,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
-      - name: Install dependencies
+      - name: Install runtime dependencies
+        if: matrix.node-version == 18
+        run: npm ci --omit=dev
+      - name: Install all dependencies
+        if: matrix.node-version != 18
         run: npm ci
       - name: Lint
+        if: matrix.node-version != 18
         run: npm run lint
       - name: Test
         run: npm test

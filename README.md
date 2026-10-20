@@ -8,12 +8,13 @@ Node.js implementation of the License XML v1.0 offline license format. The forma
 
 - Node.js 18 or newer
 - npm
+- Node.js 20.19 or newer to run the ESLint 10 development tooling
 
 ## Install and test
 
 ```sh
 npm install
-npm test
+npm run check
 ```
 
 ## Create keys and issue a license

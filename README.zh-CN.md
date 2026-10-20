@@ -8,16 +8,16 @@ License XML v1.0 离线软件许可证的 Node.js 实现。协议格式及安全
 
 - Node.js 18 或更高版本
 - npm
+- 开发环境运行 ESLint 10 需要 Node.js 20.19 或更高版本
 
 ## 安装与检查
 
 ```sh
 npm ci
-npm run lint
-npm test
+npm run check
 ```
 
-也可以一次运行 lint 和测试：
+如需在本地开发并运行 lint，请使用 Node.js 20.19 或更高版本。
 
 ```sh
 npm run check
@@ -97,7 +97,7 @@ const result = verifyLicense(xml, {
 - `npm run lint`：使用 ESLint 检查代码。
 - `npm test`：使用 Node.js 内置测试运行器执行单元测试和 CLI 集成测试。
 - `npm run check`：依次运行 lint 和测试。
-- GitHub Actions 会在推送和 Pull Request 时，在 Node.js 20、22、24 上执行安装、lint 和测试。
+- GitHub Actions 会在推送和 Pull Request 时，在 Node.js 18、20、22、24 上执行测试；在 Node.js 20、22、24 上执行 lint 和测试。
 
 本项目直接运行原生 ESM JavaScript，不需要转译或打包步骤。
 
