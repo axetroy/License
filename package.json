@@ -1,16 +1,21 @@
 {
-  "name": "license",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "license-xml",
+  "version": "0.1.0",
+  "description": "Issue and verify License XML v1.0 licenses",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": "./src/index.js",
+  "bin": {
+    "license-xml": "./src/cli.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test"
   },
-  "repository": {
-    "type": "git",
-    "url": "http://localhost:26831/axetroy/License"
+  "engines": {
+    "node": ">=18"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "dependencies": {
+    "@xmldom/xmldom": "0.9.12",
+    "xml-crypto": "6.4.0"
+  }
 }
