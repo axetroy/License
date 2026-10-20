@@ -39,4 +39,4 @@ jobs:
         run: npm run check
       - name: Run runtime tests
         if: matrix.node-version == 18
-        run: npm test
+        run: npm run test:runtime

@@ -2,16 +2,39 @@
   "name": "license-xml",
   "version": "0.1.0",
   "description": "Issue and verify License XML v1.0 licenses",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axetroy/License.git"
+  },
+  "homepage": "https://github.com/axetroy/License#readme",
+  "bugs": {
+    "url": "https://github.com/axetroy/License/issues"
+  },
+  "keywords": [
+    "license",
+    "xml",
+    "ed25519",
+    "offline",
+    "cryptography"
+  ],
   "type": "module",
   "main": "./src/index.js",
   "exports": "./src/index.js",
+  "files": [
+    "src/",
+    "CHANGELOG.md",
+    "DESIGN.md",
+    "README.md",
+    "README.zh-CN.md"
+  ],
   "bin": {
     "license-xml": "./src/cli.js"
   },
   "scripts": {
     "lint": "eslint .",
     "test": "node --test",
-    "check": "npm run lint && npm test && npm run build:playground",
+    "test:runtime": "node --test test/license.test.js",
+    "check": "npm run lint && npm test && npm run build:playground && npm pack --dry-run",
     "build:playground": "node ./scripts/build-playground.js"
   },
   "engines": {

@@ -102,6 +102,9 @@ test('supports CLI key generation, issuance, and verification', () => {
   try {
     writeFileSync(paths.payload, JSON.stringify(payload));
     assert.equal(run('keygen', '--private', paths.privateKey, '--public', paths.publicKey).status, 0);
+    const originalPrivateKey = readFileSync(paths.privateKey, 'utf8');
+    assert.equal(run('keygen', '--private', paths.privateKey, '--public', paths.publicKey).status, 2);
+    assert.equal(readFileSync(paths.privateKey, 'utf8'), originalPrivateKey);
     assert.equal(run(
       'issue',
       '--payload', paths.payload,
@@ -109,6 +112,15 @@ test('supports CLI key generation, issuance, and verification', () => {
       '--key-id', 'test-key',
       '--out', paths.license,
     ).status, 0);
+    const originalLicense = readFileSync(paths.license, 'utf8');
+    assert.equal(run(
+      'issue',
+      '--payload', paths.payload,
+      '--private', paths.privateKey,
+      '--key-id', 'test-key',
+      '--out', paths.license,
+    ).status, 2);
+    assert.equal(readFileSync(paths.license, 'utf8'), originalLicense);
     const result = run(
       'verify',
       '--file', paths.license,
@@ -119,6 +131,16 @@ test('supports CLI key generation, issuance, and verification', () => {
     );
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /VALID/);
+    const tamperedLicense = join(directory, 'tampered.license.xml');
+    writeFileSync(tamperedLicense, originalLicense.replace('LIC-001', 'LIC-002'));
+    const tamperedResult = run(
+      'verify',
+      '--file', tamperedLicense,
+      '--key-id', 'test-key',
+      '--public-key', paths.publicKey,
+    );
+    assert.equal(tamperedResult.status, 1);
+    assert.match(tamperedResult.stdout, /INVALID_SIGNATURE/);
     assert.equal(readFileSync(paths.privateKey, { encoding: 'utf8' }).includes('PRIVATE KEY'), true);
   } finally {
     rmSync(directory, { recursive: true, force: true });

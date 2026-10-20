@@ -82,6 +82,12 @@ const result = verifyLicense(xml, {
 
 `issueLicense(payload, { keyId, privateKey })` creates a signed XML string. `verifyLicense(xml, options)` returns `{ status, license? }`. Pass `now` as a `Date` or timestamp for deterministic time checks. The verifier rejects DTD/entity declarations, XML namespaces, unknown elements, duplicate identifiers, malformed signatures, and licenses larger than 1 MiB.
 
+## Project checks
+
+Run `npm ci` and `npm run check` before submitting changes. The check runs ESLint, unit and CLI integration tests, builds the playground, and reviews the files included in the npm package. Node.js 18 is supported for the runtime library and is covered by runtime-only CI; development tooling requires Node.js 20.19 or newer. Dependabot checks npm dependencies and GitHub Actions weekly, and CodeQL scans JavaScript and workflow files.
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidance and [SECURITY.md](./SECURITY.md) to report a vulnerability privately.
+
 ## Scope and security notes
 
 - Signing and verification use Node.js's built-in Ed25519 cryptography and Canonical XML 1.0 without comments.

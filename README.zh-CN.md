@@ -92,10 +92,13 @@ const result = verifyLicense(xml, {
 
 - `npm run lint`：使用 ESLint 检查代码。
 - `npm test`：使用 Node.js 内置测试运行器执行单元测试和 CLI 集成测试。
-- `npm run check`：依次运行 lint、测试并构建浏览器 Playground。
+- `npm run check`：依次运行 lint、测试、构建浏览器 Playground，并检查 npm 发布包内容。
 - GitHub Actions 会在推送和 Pull Request 时，在 Node.js 18、20、22、24 上执行测试；在 Node.js 20、22、24 上执行 lint、测试和 Playground 构建。
+- Dependabot 每周检查 npm 依赖和 GitHub Actions；CodeQL 扫描 JavaScript 和工作流文件。
 
 CLI 和核心库直接运行原生 ESM JavaScript；浏览器 Playground 使用 esbuild 打包为静态文件。
+
+提交更改前，请执行 `npm ci` 和 `npm run check`。Node.js 18 支持运行时库，并由仅安装运行时依赖的 CI 验证；开发工具需要 Node.js 20.19 或更高版本。贡献指南见 [CONTRIBUTING.md](./CONTRIBUTING.md)，漏洞请依照 [SECURITY.md](./SECURITY.md) 私下报告。
 
 ## 自动发布到 npm
 
