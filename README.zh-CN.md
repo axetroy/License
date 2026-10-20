@@ -101,6 +101,12 @@ const result = verifyLicense(xml, {
 
 本项目直接运行原生 ESM JavaScript，不需要转译或打包步骤。
 
+## 自动发布到 npm
+
+`.github/workflows/publish.yml` 会在 GitHub Release 发布后，通过 npm trusted publishing（OIDC）发布到 npm，无需 npm access token。首次发布前，请在 npmjs.com 对应包的 **Trusted Publisher** 设置中，将发布方配置为当前 GitHub 仓库和工作流文件 `.github/workflows/publish.yml`。无需设置 `NPM_TOKEN` Secret。
+
+发布步骤：先更新 `package.json` 和 `package-lock.json` 中的版本并提交，再推送匹配的 `vX.Y.Z` 标签，并为该标签创建、发布 GitHub Release。工作流会核对 Release 标签与包版本，然后执行 `npm ci`、`npm run check`，最后发布带 provenance 证明的 npm 包。
+
 ## 安全边界
 
 - 签名和验证使用 Node.js 内置 Ed25519 密码学能力及不含注释的 Canonical XML 1.0。

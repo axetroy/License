@@ -88,3 +88,9 @@ const result = verifyLicense(xml, {
 - The package does not store private keys, run a license server, perform online revocation checks, collect hardware identifiers, or enforce application feature/usage policy.
 - Machine fingerprint collection and revocation are application-layer integrations; offline verification cannot determine whether a license was revoked remotely.
 - A valid signature proves that the signed payload was issued by a holder of the corresponding private key. It does not prevent patching the client application or changing the system clock.
+
+## Automated npm publishing
+
+The `Publish to npm` GitHub Actions workflow publishes a GitHub Release to npm using npm trusted publishing (OIDC), without an npm access token. Before the first release, configure the package's **Trusted Publisher** on npmjs.com to use this GitHub repository and `.github/workflows/publish.yml`. No `NPM_TOKEN` secret is needed.
+
+To publish, update `package.json` and `package-lock.json` to the release version, push a matching `vX.Y.Z` tag, and publish a GitHub Release for that tag. The workflow checks that the release tag matches the package version, runs `npm ci` and `npm run check`, and publishes with provenance.
