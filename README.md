@@ -2,7 +2,7 @@
 
 [简体中文](./README.zh-CN.md) | [English](./README.md)
 
-Node.js implementation of the License XML v1.0 offline license format. The normative specification is available in [English](https://axetroy.github.io/License/en/specification) and [简体中文](https://axetroy.github.io/License/zh-CN/specification).
+Node.js implementation of the License XML v1.0 offline license format. The normative specification is available in [English](https://axetroy.github.io/license-xml/en/specification) and [简体中文](https://axetroy.github.io/license-xml/zh-CN/specification).
 
 ## Requirements
 
@@ -64,7 +64,7 @@ node ./src/cli.js verify \
   --product-version 5
 ```
 
-The verifier prints one of the statuses documented in the [protocol specification](https://axetroy.github.io/License/en/specification); it exits with status 1 when verification fails and status 2 for command or input errors. For machine-bound licenses, pass `--machine-fingerprint` with the application's SHA-256 digest as exactly 64 hexadecimal characters. Fingerprint comparison is case-insensitive.
+The verifier prints one of the statuses documented in the [protocol specification](https://axetroy.github.io/license-xml/en/specification); it exits with status 1 when verification fails and status 2 for command or input errors. For machine-bound licenses, pass `--machine-fingerprint` with the application's SHA-256 digest as exactly 64 hexadecimal characters. Fingerprint comparison is case-insensitive.
 
 The JavaScript API is also available:
 
@@ -97,7 +97,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidance and [SECURITY
 
 ## Documentation site
 
-The bilingual VitePress documentation site is published at `https://axetroy.github.io/License/`. On the first visit to the site root, it selects Chinese or English based on the browser language. The docs include separate guides to the format standard, signing and verification flow, security boundaries, package usage, and an embedded playground.
+The bilingual VitePress documentation site is published at `https://axetroy.github.io/license-xml/`. On the first visit to the site root, it selects Chinese or English based on the browser language. The docs include separate guides to the format standard, signing and verification flow, security boundaries, package usage, and an embedded playground.
 
 The playground edits a payload, signs it with a temporary in-memory Ed25519 key, and verifies or tampers with the resulting XML. License operations stay in the browser and are not sent to a server. The demo private key is not persisted and must never be used to issue production licenses.
 

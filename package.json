@@ -4,11 +4,11 @@
   "description": "Issue and verify License XML v1.0 licenses",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/axetroy/License.git"
+    "url": "git+https://github.com/axetroy/license-xml.git"
   },
-  "homepage": "https://github.com/axetroy/License#readme",
+  "homepage": "https://github.com/axetroy/license-xml#readme",
   "bugs": {
-    "url": "https://github.com/axetroy/License/issues"
+    "url": "https://github.com/axetroy/license-xml/issues"
   },
   "keywords": [
     "license",
