@@ -40,10 +40,13 @@ const chineseNav = [
   },
 ];
 
+const base = '/license-xml/';
+
 export default defineConfig({
   title: 'License XML',
   description: 'An offline XML license format with Ed25519 signatures',
   lang: 'en-US',
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}logo.svg` }]],
   locales: {
     'zh-CN': {
       label: '简体中文',
@@ -61,7 +64,7 @@ export default defineConfig({
       },
     },
   },
-  base: '/license-xml/',
+  base,
   outDir: '../dist',
   cleanUrls: true,
   lastUpdated: true,
