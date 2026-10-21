@@ -29,7 +29,7 @@
     "README.zh-CN.md"
   ],
   "bin": {
-    "license-xml": "./src/cli.js"
+    "license-xml": "src/cli.js"
   },
   "scripts": {
     "lint": "eslint .",
