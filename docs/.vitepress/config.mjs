@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress';
 
 const englishNav = [
   { text: 'Format', link: '/en/format' },
+  { text: 'Specification', link: '/en/specification' },
   { text: 'How it works', link: '/en/how-it-works' },
   { text: 'Guide', link: '/en/guide' },
   { text: 'Playground', link: '/en/playground' },
@@ -65,6 +66,7 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/en/' },
             { text: 'Format standard', link: '/en/format' },
+            { text: 'Protocol specification', link: '/en/specification' },
             { text: 'How it works', link: '/en/how-it-works' },
             { text: 'Usage guide', link: '/en/guide' },
             { text: 'Playground', link: '/en/playground' },
