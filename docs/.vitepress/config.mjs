@@ -44,6 +44,7 @@ export default defineConfig({
   title: 'License XML',
   description: 'An offline XML license format with Ed25519 signatures',
   lang: 'en-US',
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }]],
   locales: {
     'zh-CN': {
       label: '简体中文',
