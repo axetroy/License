@@ -16,6 +16,7 @@ const englishNav = [
 
 const chineseNav = [
   { text: '格式标准', link: '/zh-CN/format' },
+  { text: '协议规范', link: '/zh-CN/specification' },
   { text: '工作原理', link: '/zh-CN/how-it-works' },
   { text: '使用指南', link: '/zh-CN/guide' },
   { text: '在线体验', link: '/zh-CN/playground' },
@@ -76,6 +77,7 @@ export default defineConfig({
           items: [
             { text: '概览', link: '/zh-CN/' },
             { text: '格式标准', link: '/zh-CN/format' },
+            { text: '协议规范', link: '/zh-CN/specification' },
             { text: '工作原理', link: '/zh-CN/how-it-works' },
             { text: '使用指南', link: '/zh-CN/guide' },
             { text: 'Playground', link: '/zh-CN/playground' },

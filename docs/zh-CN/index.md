@@ -26,6 +26,7 @@ features:
 ## 文档导航
 
 - [格式标准](./format)：XML 结构、字段规则与规范化算法。
+- [协议规范](./specification)：License XML v1.0 的完整规范性定义。
 - [工作原理](./how-it-works)：密钥角色、签发、验证流程与安全边界。
 - [使用指南](./guide)：安装 npm 包、调用 API 和使用 CLI。
 - [Playground](./playground)：在浏览器中签发和验证演示许可证。
