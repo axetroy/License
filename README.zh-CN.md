@@ -1,6 +1,6 @@
 # License XML
 
-[简体中文](./README.zh-CN.md) | [English](./README.md)
+简体中文 | [English](./README.md)
 
 License XML v1.0 离线软件许可证的 Node.js 实现。规范性标准见[简体中文](https://axetroy.github.io/license-xml/zh-CN/specification)和[英文版](https://axetroy.github.io/license-xml/en/specification)。
 
