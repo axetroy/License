@@ -59,4 +59,4 @@ Perpetual licenses omit `expiresAt`. Machine fingerprint collection and calculat
 
 ## Canonicalization
 
-Only the `<payload>` element is signed. The signer and verifier canonicalize that element using Canonical XML 1.0 without comments and encode the result as UTF-8 before Ed25519 signing or verification. Whitespace that is part of text content remains significant. See the [complete design whitepaper](https://github.com/axetroy/License/blob/main/DESIGN.md) for the normative specification.
+Only the `<payload>` element is signed. The signer and verifier canonicalize that element using Canonical XML 1.0 without comments and encode the result as UTF-8 before Ed25519 signing or verification. Whitespace that is part of text content remains significant. See the complete [License XML v1.0 protocol specification](./specification) for the normative definition.

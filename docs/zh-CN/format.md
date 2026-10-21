@@ -59,4 +59,4 @@ License XML 是 UTF-8 编码的 XML 1.0 文档。使用 Canonical XML 1.0（不�
 
 ## 规范化
 
-仅对 `<payload>` 元素签名。签发方与验证方使用 Canonical XML 1.0（不含注释）规范化该元素，并将结果编码为 UTF-8 后进行 Ed25519 签名或验证。文本中的空白属于签名内容，不能随意重排。规范性完整定义见[设计白皮书](https://github.com/axetroy/License/blob/main/DESIGN.md)。
+仅对 `<payload>` 元素签名。签发方与验证方使用 Canonical XML 1.0（不含注释）规范化该元素，并将结果编码为 UTF-8 后进行 Ed25519 签名或验证。文本中的空白属于签名内容，不能随意重排。规范性完整定义见[License XML v1.0 协议规范](./specification)。

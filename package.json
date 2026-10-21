@@ -23,7 +23,6 @@
   "files": [
     "src/",
     "CHANGELOG.md",
-    "DESIGN.md",
     "README.md",
     "README.zh-CN.md"
   ],
