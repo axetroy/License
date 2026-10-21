@@ -1,6 +1,6 @@
 # License XML
 
-[简体中文](./README.zh-CN.md) | [English](./README.md)
+[简体中文](./README.zh-CN.md) | English
 
 Node.js implementation of the License XML v1.0 offline license format. The normative specification is available in [English](https://axetroy.github.io/license-xml/en/specification) and [简体中文](https://axetroy.github.io/license-xml/zh-CN/specification).
 
