@@ -1,9 +1,9 @@
 import { defineConfig } from 'vitepress';
 
 const englishNav = [
+  { text: 'Guide', link: '/en/guide' },
   { text: 'Specification', link: '/en/specification' },
   { text: 'How it works', link: '/en/how-it-works' },
-  { text: 'Guide', link: '/en/guide' },
   { text: 'Playground', link: '/en/playground' },
   {
     text: 'Language',
@@ -15,9 +15,9 @@ const englishNav = [
 ];
 
 const chineseNav = [
+  { text: '使用指南', link: '/zh-CN/guide' },
   { text: '协议规范', link: '/zh-CN/specification' },
   { text: '工作原理', link: '/zh-CN/how-it-works' },
-  { text: '使用指南', link: '/zh-CN/guide' },
   { text: '在线体验', link: '/zh-CN/playground' },
   {
     text: '语言',
@@ -63,9 +63,9 @@ export default defineConfig({
           text: 'Documentation',
           items: [
             { text: 'Overview', link: '/en/' },
+            { text: 'Usage guide', link: '/en/guide' },
             { text: 'Protocol specification', link: '/en/specification' },
             { text: 'How it works', link: '/en/how-it-works' },
-            { text: 'Usage guide', link: '/en/guide' },
             { text: 'Playground', link: '/en/playground' },
           ],
         },
@@ -75,9 +75,9 @@ export default defineConfig({
           text: '文档',
           items: [
             { text: '概览', link: '/zh-CN/' },
+            { text: '使用指南', link: '/zh-CN/guide' },
             { text: '协议规范', link: '/zh-CN/specification' },
             { text: '工作原理', link: '/zh-CN/how-it-works' },
-            { text: '使用指南', link: '/zh-CN/guide' },
             { text: 'Playground', link: '/zh-CN/playground' },
           ],
         },
