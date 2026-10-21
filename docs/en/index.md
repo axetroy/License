@@ -9,8 +9,8 @@ hero:
   tagline: A readable XML license format secured with Ed25519 and Canonical XML 1.0.
   actions:
     - theme: brand
-      text: Read the format standard
-      link: /en/format
+      text: Read the protocol specification
+      link: /en/specification
     - theme: alt
       text: Open the playground
       link: /en/playground
@@ -25,7 +25,6 @@ features:
 
 ## Documentation
 
-- [Format standard](./format): XML structure, field rules, and canonicalization.
 - [Protocol specification](./specification): The complete normative definition of License XML v1.0.
 - [How it works](./how-it-works): key roles, signing, verification, and security boundaries.
 - [Usage guide](./guide): install the package, use the API, and run the CLI.

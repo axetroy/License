@@ -37,6 +37,7 @@ button { cursor: pointer; }
   border-bottom: 1px solid #e9ecea;
 }
 
+.topbar-actions { display: flex; align-items: center; gap: 14px; }
 .brand {
   display: inline-flex;
   gap: 11px;
@@ -62,6 +63,7 @@ button { cursor: pointer; }
 .brand-light { color: #8b938f; font-weight: 500; }
 .doc-link { color: #727b76; font-size: 13px; text-decoration: none; }
 .doc-link:hover { color: var(--green); }
+.fullscreen-button { min-height: 32px; padding: 0 10px; }
 .intro { max-width: 760px; padding: 65px 0 29px; }
 
 .eyebrow {
@@ -160,6 +162,8 @@ footer { display: flex; justify-content: space-between; padding: 24px 2px 35px; 
 @media (max-width: 760px) {
   .page { padding: 0 19px; }
   .topbar { height: 64px; }
+  .topbar-actions { gap: 9px; }
+  .doc-link { font-size: 11px; }
   .intro { padding: 48px 0 25px; }
   h1 { letter-spacing: -1.1px; }
   .workspace { grid-template-columns: 1fr; }
