@@ -2,6 +2,7 @@
   "name": "license-xml",
   "version": "0.1.0",
   "description": "Issue and verify License XML v1.0 licenses",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/axetroy/license-xml.git"
@@ -23,6 +24,7 @@
   "files": [
     "src/",
     "CHANGELOG.md",
+    "LICENSE",
     "README.md",
     "README.zh-CN.md"
   ],
@@ -34,6 +36,7 @@
     "test": "node --test",
     "test:runtime": "node --test test/license.test.js",
     "check": "npm run lint && npm test && npm run docs:build && npm pack --dry-run",
+    "release": "changeset publish",
     "build:playground": "node ./scripts/build-playground.js",
     "docs:build": "npm run build:playground && vitepress build docs",
     "docs:dev": "npm run build:playground && vitepress dev docs"
@@ -46,6 +49,7 @@
     "xml-crypto": "6.4.0"
   },
   "devDependencies": {
+    "@changesets/cli": "3.0.3",
     "@eslint/js": "10.0.1",
     "esbuild": "0.28.2",
     "eslint": "10.13.0",
