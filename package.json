@@ -1,6 +1,6 @@
 {
   "name": "license-xml",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Issue and verify License XML v1.0 licenses",
   "license": "MIT",
   "repository": {
