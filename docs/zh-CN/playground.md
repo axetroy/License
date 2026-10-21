@@ -1,3 +1,7 @@
+---
+sidebar: false
+---
+
 # 浏览器 Playground
 
 Playground 支持编辑许可证载荷、使用临时 Ed25519 密钥签名，并验证或篡改生成的 XML。

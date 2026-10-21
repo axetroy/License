@@ -1,3 +1,7 @@
+---
+sidebar: false
+---
+
 # License XML v1.0 协议规范
 
 软件授权许可文件协议规范。

@@ -1,3 +1,7 @@
+---
+sidebar: false
+---
+
 # Browser playground
 
 The playground lets you edit a license payload, sign it with a temporary Ed25519 key, and verify or tamper with the resulting XML.
