@@ -27,6 +27,8 @@ jobs:
           registry-url: https://registry.npmjs.org
       - name: Install dependencies
         run: npm ci
+      - name: Verify package
+        run: npm run check
       - name: Create version pull request or publish release
         uses: changesets/action@v2
         with:
