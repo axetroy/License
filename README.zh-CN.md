@@ -2,7 +2,7 @@
 
 [简体中文](./README.zh-CN.md) | [English](./README.md)
 
-License XML v1.0 离线软件许可证的 Node.js 实现。协议格式及安全边界详见[设计白皮书](./DESIGN.md)。
+License XML v1.0 离线软件许可证的 Node.js 实现。规范性标准见[简体中文](./docs/zh-CN/specification.md)和[英文版](./docs/en/specification.md)。
 
 ## 环境要求
 
@@ -68,7 +68,7 @@ node ./src/cli.js verify \
   --product-version 5
 ```
 
-验证器会输出[白皮书定义的状态](./DESIGN.md)，验证失败时退出码为 `1`，命令或输入错误时退出码为 `2`。机器绑定许可证需要使用 `--machine-fingerprint` 传入应用计算的 SHA-256 摘要，格式必须恰好为 64 个十六进制字符；比较指纹时不区分字母大小写。
+验证器会输出[协议规范定义的状态](./docs/zh-CN/specification.md#24-许可证状态)，验证失败时退出码为 `1`，命令或输入错误时退出码为 `2`。机器绑定许可证需要使用 `--machine-fingerprint` 传入应用计算的 SHA-256 摘要，格式必须恰好为 64 个十六进制字符；比较指纹时不区分字母大小写。
 
 ## JavaScript API
 

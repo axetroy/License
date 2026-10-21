@@ -9,7 +9,7 @@
 ## Changes
 
 - Add or update tests for behavior changes and bug fixes.
-- Keep the implementation and specification in `DESIGN.md` consistent. Protocol changes must explicitly identify compatibility and security implications.
+- The normative specification has two localized source files: `docs/zh-CN/specification.md` and `docs/en/specification.md`. Keep both versions consistent with each other and with the implementation. Protocol changes must explicitly identify compatibility and security implications.
 - Do not commit generated `dist/` output, private keys, or license files containing real customer data.
 - Keep pull requests focused and describe user-visible changes and validation performed.
 
