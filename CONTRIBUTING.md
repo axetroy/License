@@ -15,4 +15,6 @@
 
 ## Releases
 
-Releases are published from GitHub Releases using the npm trusted publisher workflow. Update `package.json` and `package-lock.json` together, and ensure the release tag matches the package version.
+Add a Changeset for each user-facing change. When changesets are merged to `main`, the release workflow opens or updates a version pull request. Merging that pull request creates a GitHub Release and publishes the package to npm through trusted publishing.
+
+Before the first release, configure the package's npm trusted publisher to use this repository and `.github/workflows/publish.yml`. GitHub Actions must also be allowed to create pull requests in the repository settings.
