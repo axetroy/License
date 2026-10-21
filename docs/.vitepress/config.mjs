@@ -32,6 +32,23 @@ export default defineConfig({
   title: 'License XML',
   description: 'An offline XML license format with Ed25519 signatures',
   lang: 'en-US',
+  locales: {
+    'zh-CN': {
+      label: '简体中文',
+      lang: 'zh-CN',
+      themeConfig: {
+        nav: chineseNav,
+        outlineTitle: '本页目录',
+        lastUpdated: { text: '最后更新于' },
+        docFooter: { prev: '上一页', next: '下一页' },
+        returnToTopLabel: '返回顶部',
+        sidebarMenuLabel: '菜单',
+        darkModeSwitchLabel: '外观',
+        lightModeSwitchTitle: '浅色模式',
+        darkModeSwitchTitle: '深色模式',
+      },
+    },
+  },
   base: '/License/',
   outDir: '../dist',
   cleanUrls: true,
@@ -65,23 +82,6 @@ export default defineConfig({
           ],
         },
       ],
-    },
-    locales: {
-      '/zh-CN/': {
-        label: '简体中文',
-        lang: 'zh-CN',
-        themeConfig: {
-          nav: chineseNav,
-          outlineTitle: '本页目录',
-          lastUpdated: { text: '最后更新于' },
-          docFooter: { prev: '上一页', next: '下一页' },
-          returnToTopLabel: '返回顶部',
-          sidebarMenuLabel: '菜单',
-          darkModeSwitchLabel: '外观',
-          lightModeSwitchTitle: '浅色模式',
-          darkModeSwitchTitle: '深色模式',
-        },
-      },
     },
   },
 });
