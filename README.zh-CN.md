@@ -68,7 +68,7 @@ node ./src/cli.js verify \
   --product-version 5
 ```
 
-验证器会输出[白皮书定义的状态](./DESIGN.md)，验证失败时退出码为 `1`，命令或输入错误时退出码为 `2`。机器绑定许可证需要使用 `--machine-fingerprint` 传入应用计算的 64 位 SHA-256 十六进制摘要。
+验证器会输出[白皮书定义的状态](./DESIGN.md)，验证失败时退出码为 `1`，命令或输入错误时退出码为 `2`。机器绑定许可证需要使用 `--machine-fingerprint` 传入应用计算的 SHA-256 摘要，格式必须恰好为 64 个十六进制字符；比较指纹时不区分字母大小写。
 
 ## JavaScript API
 

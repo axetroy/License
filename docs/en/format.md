@@ -52,10 +52,10 @@ The root contains exactly one `payload`, followed by one `signature`. The payloa
 | `validity/expiresAt` | Optional except for non-perpetual licenses; if present, later than `issuedAt`. |
 | `features/feature` | Unique `id` and required `enabled="true"` or `enabled="false"`. |
 | `limits/limit` | Unique `id` and a non-negative decimal integer value. |
-| `machine/type` | `none` or `fingerprint`; fingerprint mode requires a 64-character SHA-256 hex digest in `machine/value`. |
+| `machine/type` | `none` or `fingerprint`; fingerprint mode requires exactly 64 hexadecimal characters representing a SHA-256 digest in `machine/value`. |
 | `signature` | 64-byte Ed25519 signature encoded as standard Base64; `keyId` identifies the trusted public key. |
 
-Perpetual licenses omit `expiresAt`. Machine fingerprint collection and calculation are application responsibilities; the format does not prescribe hardware identifiers.
+Perpetual licenses omit `expiresAt`. Machine fingerprint collection and calculation are application responsibilities; the format does not prescribe hardware identifiers. When checking a license, the verifier compares the fingerprint hex characters without regard to letter case. The signed XML value itself remains case-sensitive payload text.
 
 ## Canonicalization
 

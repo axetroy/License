@@ -52,10 +52,10 @@ License XML 是 UTF-8 编码的 XML 1.0 文档。使用 Canonical XML 1.0（不�
 | `validity/expiresAt` | 非永久许可证必填；若存在，必须晚于 `issuedAt`。 |
 | `features/feature` | `id` 唯一，且必须有 `enabled="true"` 或 `enabled="false"`。 |
 | `limits/limit` | `id` 唯一，值为非负十进制整数。 |
-| `machine/type` | `none` 或 `fingerprint`；指纹模式要求 `machine/value` 是 64 位 SHA-256 十六进制摘要。 |
+| `machine/type` | `none` 或 `fingerprint`；指纹模式要求 `machine/value` 恰好是 64 个表示 SHA-256 摘要的十六进制字符。 |
 | `signature` | 64 字节 Ed25519 签名，以标准 Base64 编码；`keyId` 用于定位可信公钥。 |
 
-永久许可证省略 `expiresAt`。机器指纹的采集和计算由应用负责，协议不规定硬件标识符。
+永久许可证省略 `expiresAt`。机器指纹的采集和计算由应用负责，协议不规定硬件标识符。验证许可证时，指纹十六进制字符比较不区分字母大小写；但签名保护的 XML 原始载荷文本仍区分大小写。
 
 ## 规范化
 

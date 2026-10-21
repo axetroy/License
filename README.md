@@ -10,10 +10,10 @@ Node.js implementation of the License XML v1.0 offline license format. The forma
 - npm
 - Node.js 20.19 or newer to run the ESLint 10 development tooling
 
-## Install and test
+## Install and check
 
 ```sh
-npm install
+npm ci
 npm run check
 ```
 
@@ -64,7 +64,7 @@ node ./src/cli.js verify \
   --product-version 5
 ```
 
-The verifier prints one of the statuses documented in `DESIGN.md`; it exits with status 1 when verification fails and status 2 for command or input errors. For machine-bound licenses, pass `--machine-fingerprint` with the application's expected 64-character SHA-256 digest.
+The verifier prints one of the statuses documented in `DESIGN.md`; it exits with status 1 when verification fails and status 2 for command or input errors. For machine-bound licenses, pass `--machine-fingerprint` with the application's SHA-256 digest as exactly 64 hexadecimal characters. Fingerprint comparison is case-insensitive.
 
 The JavaScript API is also available:
 
