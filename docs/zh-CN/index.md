@@ -9,8 +9,8 @@ hero:
   tagline: 使用 Ed25519 与 Canonical XML 1.0 保护的可读 XML 许可证格式。
   actions:
     - theme: brand
-      text: 阅读格式标准
-      link: /zh-CN/format
+      text: 阅读协议规范
+      link: /zh-CN/specification
     - theme: alt
       text: 打开 Playground
       link: /zh-CN/playground
@@ -25,8 +25,8 @@ features:
 
 ## 文档导航
 
-- [格式标准](./format)：XML 结构、字段规则与规范化算法。
 - [协议规范](./specification)：License XML v1.0 的完整规范性定义。
+- [API](./api)：JavaScript 接口、选项及验证结果说明。
 - [工作原理](./how-it-works)：密钥角色、签发、验证流程与安全边界。
 - [使用指南](./guide)：安装 npm 包、调用 API 和使用 CLI。
 - [Playground](./playground)：在浏览器中签发和验证演示许可证。

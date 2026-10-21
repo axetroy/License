@@ -24,9 +24,28 @@ const resultField = document.querySelector('#result');
 const signButton = document.querySelector('#sign');
 const verifyButton = document.querySelector('#verify');
 const copyButton = document.querySelector('#copy-key');
+const fullscreenButton = document.querySelector('#fullscreen');
 let demoPrivateKey;
 
 payloadField.value = JSON.stringify(examplePayload, null, 2);
+
+fullscreenButton.addEventListener('click', async () => {
+  try {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else {
+      await document.documentElement.requestFullscreen();
+    }
+  } catch {
+    fullscreenButton.disabled = true;
+  }
+});
+
+document.addEventListener('fullscreenchange', () => {
+  const label = document.fullscreenElement ? '退出全屏' : '全屏';
+  fullscreenButton.textContent = text(label);
+  fullscreenButton.setAttribute('aria-label', text(label));
+});
 
 document.querySelector('#reset').addEventListener('click', () => {
   payloadField.value = JSON.stringify(examplePayload, null, 2);
@@ -125,6 +144,8 @@ const englishText = {
   '验证失败': 'Verification failed',
   '已复制': 'Copied',
   '复制': 'Copy',
+  '全屏': 'Fullscreen',
+  '退出全屏': 'Exit fullscreen',
   '当前环境不支持 Web Crypto，请使用 HTTPS 或 localhost 打开页面。': 'Web Crypto is unavailable. Open this page over HTTPS or localhost.',
   '载荷必须是符合协议结构的 JSON 对象。': 'Payload must be a JSON object matching the format.',
   'type 必须是 trial、subscription 或 perpetual。': 'type must be trial, subscription, or perpetual.',
@@ -190,7 +211,9 @@ function localizeInterface() {
   document.documentElement.lang = 'en';
   document.title = 'License XML Playground';
   document.querySelector('.brand').setAttribute('aria-label', 'License XML Playground home');
-  document.querySelector('.doc-link').textContent = 'Format specification ↗';
+  document.querySelector('.doc-link').textContent = 'Protocol specification ↗';
+  fullscreenButton.textContent = text('全屏');
+  fullscreenButton.setAttribute('aria-label', text('全屏'));
   document.querySelector('.eyebrow').lastChild.textContent = ' LICENSE XML · VERSION 1.0';
   document.querySelector('.intro h1').textContent = 'Explore license signing and verification.';
   document.querySelector('.intro-copy').textContent = 'Edit a license payload, sign it with a temporary Ed25519 key, then change it and verify the signature. Everything runs in this browser.';

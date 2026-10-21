@@ -1,3 +1,7 @@
+---
+sidebar: false
+---
+
 # How License XML works
 
 License XML uses Ed25519 digital signatures to protect a license payload. The license is a readable XML file; its signature verifies that a trusted issuer signed the payload and that it has not changed since issuance. A signature does not encrypt the license or provide online activation or usage metering.

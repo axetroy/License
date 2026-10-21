@@ -1,3 +1,7 @@
+---
+sidebar: false
+---
+
 # License XML v1.0 Protocol Specification
 
 Specification for the software license file protocol.
