@@ -2,7 +2,7 @@
 
 [简体中文](./README.zh-CN.md) | [English](./README.md)
 
-License XML v1.0 离线软件许可证的 Node.js 实现。规范性标准见[简体中文](https://axetroy.github.io/License/zh-CN/specification)和[英文版](https://axetroy.github.io/License/en/specification)。
+License XML v1.0 离线软件许可证的 Node.js 实现。规范性标准见[简体中文](https://axetroy.github.io/license-xml/zh-CN/specification)和[英文版](https://axetroy.github.io/license-xml/en/specification)。
 
 ## 环境要求
 
@@ -68,7 +68,7 @@ node ./src/cli.js verify \
   --product-version 5
 ```
 
-验证器会输出[协议规范定义的状态](https://axetroy.github.io/License/zh-CN/specification)，验证失败时退出码为 `1`，命令或输入错误时退出码为 `2`。机器绑定许可证需要使用 `--machine-fingerprint` 传入应用计算的 SHA-256 摘要，格式必须恰好为 64 个十六进制字符；比较指纹时不区分字母大小写。
+验证器会输出[协议规范定义的状态](https://axetroy.github.io/license-xml/zh-CN/specification)，验证失败时退出码为 `1`，命令或输入错误时退出码为 `2`。机器绑定许可证需要使用 `--machine-fingerprint` 传入应用计算的 SHA-256 摘要，格式必须恰好为 64 个十六进制字符；比较指纹时不区分字母大小写。
 
 ## JavaScript API
 
@@ -108,7 +108,7 @@ CLI 和核心库直接运行原生 ESM JavaScript；文档站使用 VitePress �
 
 ## 文档站
 
-中英文双语 VitePress 文档站地址为 `https://axetroy.github.io/License/`。首次访问站点根路径时，会根据浏览器语言自动选择中文或英文。文档包含格式标准、签发与验证流程、安全边界、使用指南以及嵌入式 Playground。
+中英文双语 VitePress 文档站地址为 `https://axetroy.github.io/license-xml/`。首次访问站点根路径时，会根据浏览器语言自动选择中文或英文。文档包含格式标准、签发与验证流程、安全边界、使用指南以及嵌入式 Playground。
 
 Playground 支持编辑载荷，使用浏览器内存中的临时 Ed25519 密钥签名，并验证或篡改生成的 XML。许可证和密钥操作均在本地浏览器完成，不会上传到服务器。演示私钥不会持久化，严禁用于生产签发。
 

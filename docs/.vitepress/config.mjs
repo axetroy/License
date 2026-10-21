@@ -51,13 +51,13 @@ export default defineConfig({
       },
     },
   },
-  base: '/License/',
+  base: '/license-xml/',
   outDir: '../dist',
   cleanUrls: true,
   lastUpdated: true,
   themeConfig: {
     logo: { light: '/logo.svg', dark: '/logo.svg', alt: 'License XML' },
-    socialLinks: [{ icon: 'github', link: 'https://github.com/axetroy/License' }],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/axetroy/license-xml' }],
     nav: englishNav,
     sidebar: {
       '/en/': [
