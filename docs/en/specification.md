@@ -2,14 +2,16 @@
 
 Specification for the software license file protocol.
 
-**Protocol name:** License XML  
-**Protocol version:** 1.0  
-**File format:** XML 1.0  
-**Character encoding:** UTF-8  
-**Signature algorithm:** Ed25519  
-**XML canonicalization:** Canonical XML 1.0 (without comments)  
-**Digest algorithm:** SHA-256 (for machine fingerprints)  
-**Signature encoding:** Base64  
+| Property | Value |
+| --- | --- |
+| Protocol name | License XML |
+| Protocol version | 1.0 |
+| File format | XML 1.0 |
+| Character encoding | UTF-8 |
+| Signature algorithm | Ed25519 |
+| XML canonicalization | Canonical XML 1.0 (without comments) |
+| Digest algorithm | SHA-256 (for machine fingerprints) |
+| Signature encoding | Base64 |
 **Design goals:** Human-readable, editable, tamper-evident, and verifiable offline
 
 ---
