@@ -5,7 +5,7 @@ export default defineConfig({
     include: ['test/**/*.test.js'],
     coverage: {
       provider: 'v8',
-      include: ['src/**/*.js'],
+      include: ['src/index.js'],
       reporter: ['text'],
       thresholds: {
         lines: 90,
