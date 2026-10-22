@@ -51,9 +51,11 @@
   "devDependencies": {
     "@changesets/cli": "3.0.3",
     "@eslint/js": "10.0.1",
+    "@vitest/coverage-v8": "3.2.6",
     "esbuild": "0.28.2",
     "eslint": "10.13.0",
     "vitepress": "^1.6.4",
+    "vitest": "3.2.6",
     "xmldsigjs": "2.8.8"
   },
   "overrides": {
