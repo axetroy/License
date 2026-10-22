@@ -28,11 +28,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
-      - name: Install runtime dependencies
-        if: matrix.node-version == 18
-        run: npm ci --omit=dev
       - name: Install all dependencies
-        if: matrix.node-version != 18
         run: npm ci
       - name: Run checks
         if: matrix.node-version != 18
